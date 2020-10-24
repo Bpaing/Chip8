@@ -1,6 +1,7 @@
 //By Brendan Paing. Started 10/22/2020.
 
 #include <cstdint>
+#include <string>
 
 class Chip8
 {
@@ -16,5 +17,20 @@ class Chip8
 		uint8_t input[16]{};			//16 inputs, all representing a hex value.
 		uint32_t display[64 * 32]{};	//62 x 32 pixel display, uint32 is used for SDL later on.
 
-		uint16_t opcode{};				//CPU instruction. uint16 is used because instructions can be specified to be hex.							
+		uint16_t opcode{};				//CPU instruction. uint16 is used because instructions can be specified to be hex.			
+
+
+		void LoadROM(char const* filename);
+
+		//Chip8 Instructions
+		void OP_00E0();
+		void OP_00EE();
+		void OP_1nnn();
+		void OP_2nnn();
+		void OP_3xkk();
+		void OP_4xkk();
+		void OP_5xy0();
+		void OP_6xkk();
+		void OP_7xkk();
+		void OP_8xy0();
 };
