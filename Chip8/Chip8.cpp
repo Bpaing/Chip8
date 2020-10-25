@@ -146,3 +146,97 @@ void Chip8::OP_8xy0()	//LD Vx, Vy; Set value of register Vy in register Vx
 	registers[Vx] = registers[Vy];
 }
 
+void Chip8::OP_8xy1()	//OR Vx, Vy; Bitwise OR operation on Vx and Vy, store in Vx.
+{
+	uint8_t Vx = (opcode & 0x0F00u) >> 8u;
+	uint8_t Vy = (opcode & 0x00F0u) >> 4u;
+
+	registers[Vx] |= registers[Vy];
+}
+
+void Chip8::OP_8xy2()	//OR Vx, Vy; Bitwise AND operation on Vx and Vy, store in Vx.
+{
+	uint8_t Vx = (opcode & 0x0F00u) >> 8u;
+	uint8_t Vy = (opcode & 0x00F0u) >> 4u;
+
+	registers[Vx] &= registers[Vy];
+}
+
+void Chip8::OP_8xy3()	//XOR Vx, Vy; Bitwise OR exclusive operation on Vx and Vy, store in Vx.
+{
+	uint8_t Vx = (opcode & 0x0F00u) >> 8u;
+	uint8_t Vy = (opcode & 0x00F0u) >> 4u;
+
+	registers[Vx] ^= registers[Vy];
+}
+
+void Chip8::OP_8xy4()	//ADD Vx, Vy; add values of Vx and Vy, store in Vx, left over bits indicated by register VF.
+{
+	uint8_t Vx = (opcode & 0x0F00u) >> 8u;		//VF . . . last register
+	uint8_t Vy = (opcode & 0x00F0u) >> 4u;		//Carry over if result > 8 bits (255).								
+	uint16_t sum = registers[Vx] + registers[Vy];
+
+	if (sum > 255u) {	
+		registers[0xFu] = 1;
+	} else {
+		registers[0xFu] = 0;
+	}
+
+	registers[Vx] = sum & 0xFFu;				//Use bitwise AND to reduce 16 bit sum to 8 bit register value.
+}
+
+void Chip8::OP_8xy5()	//SUB Vx, Vy; If Vx > Vy, VF = 1, else 0. Then Vx - Vy value stored in register Vx.
+{
+	uint8_t Vx = (opcode & 0x0F00u) >> 8u;		//VF . . . last register
+	uint8_t Vy = (opcode & 0x00F0u) >> 4u;		//Carry over if result > 8 bits (255).
+
+	if (registers[Vx] > registers[Vy]) {
+		registers[0xFu] = 1;
+	} else {
+		registers[0xFu] = 0;
+	}
+
+	registers[Vx] -= registers[Vy];
+}
+
+void Chip8::OP_8xy6()	//SHR Vx{, Vy}; if least-significant digit of Vx = 1, then VF = 1. Then Vx / 2.
+{						//Least significant digit = rightmost digit.
+	uint8_t Vx = (opcode & 0x0F00u) >> 8u;
+
+	registers[0xFu] = registers[Vx] & 0x1u;		//0x1u == 0x01u, so checking least-sig
+	registers[Vx] >>= 1;						//Dividing bits is basically just shifting. '=' indiciates unsigned.
+}
+
+void Chip8::OP_8xy7()	//SUBN Vx, Vy; Vx = Vy - Vx, If Vy > Vx, VF = 1, else 0.
+{						//8xy5 but Vx and Vy are flipped.
+	uint8_t Vx = (opcode & 0x0F00u) >> 8u;
+	uint8_t Vy = (opcode & 0x00F0u) >> 4u;
+
+	if (registers[Vy] > registers[Vx]) {
+		registers[0xFu] = 1;
+	}
+	else {
+		registers[0xFu] = 0;
+	}
+
+	registers[Vx] = (registers[Vy] - registers[Vx]);
+}
+
+void Chip8::OP_8xyE()	//SHL Vx{ , Vy }; If most-significant digit of Vx = 1, then VF = 1. Then Vx * 2;
+{						
+	uint8_t Vx = (opcode & 0x0F00u) >> 8u;
+
+	registers[0xF] = (registers[Vx] & 0x80u) >> 7u;	//0x80 in binary is 1000000, thus the MSB.
+	registers[Vx] <<= 1;							//then we shift it 7 right to store in VF as a single digit.
+}
+
+void Chip8::OP_9xy0()	//SNE Vx, Vy; If Vx != Vy, skip next instruction.
+{
+	uint8_t Vx = (opcode & 0x0F00u) >> 8u;
+	uint8_t Vy = (opcode & 0x00F0u) >> 4u;
+
+	if (registers[Vx] != registers[Vy]) {
+		counter += 2;
+	}
+}
+
