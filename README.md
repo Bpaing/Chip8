@@ -9,3 +9,7 @@ Some things I learned during this project:
   opcodes
   More hexadecimal and binary practice
   
+Things of interest to look into
+  Random Number Generator
+  C++ time/chrono
+  SDL Graphics
