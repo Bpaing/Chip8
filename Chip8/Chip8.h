@@ -2,6 +2,8 @@
 
 #include <cstdint>
 #include <string>
+#include <random>
+#include <chrono>
 
 class Chip8
 {
@@ -16,9 +18,17 @@ class Chip8
 		uint8_t sound{};				//Similar to delay, but for sounds
 		uint8_t input[16]{};			//16 inputs, all representing a hex value.
 		uint32_t display[64 * 32]{};	//62 x 32 pixel display, uint32 is used for SDL later on.
-
 		uint16_t opcode{};				//CPU instruction. uint16 is used because instructions can be specified to be hex.			
 
+		std::default_random_engine randNumGen;				//random generator
+		std::uniform_int_distribution<uint8_t> randByte;	//random number storage
+
+		Chip8()		//Generally, best practice is to seed ONCE, then extract numbers.
+			: randNumGen(std::chrono::system_clock::now().time_since_epoch().count()) //seed is system clock.
+		{
+			randByte = std::uniform_int_distribution<uint8_t>(0, 255U);
+			//grabs numbers from the generator seeded in the constructor.
+		}
 
 		void LoadROM(char const* filename);
 
@@ -42,4 +52,8 @@ class Chip8
 		void OP_8xy7();
 		void OP_8xyE();
 		void OP_9xy0();
+		void OP_Annn();
+		void OP_Bnnn();
+		void OP_Cxkk();
+		void OP_Dxyn();
 };

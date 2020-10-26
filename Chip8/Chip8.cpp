@@ -80,7 +80,7 @@ void Chip8::OP_00EE()	//RET; return subroutine;	counter to address at top of sta
 
 void Chip8::OP_1nnn()	//JP; set program counter to address nnn
 {
-	uint16_t address = opcode & 0xFFFu;		//After 0xFFF (end of ROM instruction), free space to use		010100100 &
+	uint16_t address = opcode & 0x0FFFu;	//After 0xFFF (end of ROM instruction), free space to use		010100100 &
 	counter = address;						//The & bitwise operator is like && but for smaller data.		101101100
 }											//																000100100
 
@@ -240,3 +240,57 @@ void Chip8::OP_9xy0()	//SNE Vx, Vy; If Vx != Vy, skip next instruction.
 	}
 }
 
+void Chip8::OP_Annn()	//LD I;	Index register set to nnn.
+{
+	uint16_t address = opcode & 0x0FFFu;
+	index = address;
+}
+
+void Chip8::OP_Bnnn()	//JP V0; counter set to nnn + value of V0
+{
+	uint16_t address = opcode & 0x0FFFu;
+	counter = address + registers[0x0u];
+}
+
+void Chip8::OP_Cxkk()	//RND Vx, byte; set value of register Vx to random byte AND kk
+{						//Seed RNG in the constructor, then initialize with a instance member
+	uint8_t Vx = (opcode & 0x0F00u) >> 8u;
+	uint8_t kk = (opcode & 0x00FFu);
+
+	registers[Vx] = randByte(randNumGen) & kk;
+}
+
+//Read n-byte starting at memory location I, displayed as sprites at coordinate (Vx, Vy)
+//Sprites are XOR'd onto the screen (in case there are other sprites present).
+//If any sprites are deleted as a result of XOR, VF = 1, otherwise 0;
+//Any sprites on the edges should wrap around.
+void Chip8::OP_Dxyn()	//DRW Vx, Vy, nibble;
+{						
+	uint8_t Vx = (opcode & 0x0F00u) >> 8u;
+	uint8_t Vy = (opcode & 0x00F0u) >> 4u;
+	uint8_t nBytes = opcode & 0x000Fu;
+
+	uint8_t posX = registers[Vx] & VIDEO_WIDTH;	//video and screen will be visited again when we do graphics.
+	uint8_t posY = registers[Vy] & VIDEO_HEIGHT;
+
+	for (unsigned int row = 0; row < nBytes; row++) {
+		uint8_t spriteByte = memory[index + row];
+
+		for (unsigned int col = 0; col < 8; col++) {	//8 bit int = 8 columns.
+			//0x8u is the leftmost digit = 1. Rightshift by col to set each column to '1' (on).
+			uint8_t spritePixel = spriteByte & (0x8u >> col);
+			uint32_t* screenPixel = &video[(yPos + row) * VIDEO_WIDTH + (posX + col)];
+
+			if (spritePixel) {	//if the sprite pixel is on, check for collision
+				// Screen pixel also on - collision
+				if (*screenPixel == 0xFFFFFFFF)
+				{
+					registers[0xF] = 1;
+				}
+
+				// Effectively XOR with the sprite pixel
+				*screenPixel ^= 0xFFFFFFFF;
+			}
+		}
+	}
+}
