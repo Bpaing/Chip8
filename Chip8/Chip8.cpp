@@ -294,3 +294,97 @@ void Chip8::OP_Dxyn()	//DRW Vx, Vy, nibble;
 		}
 	}
 }
+
+void Chip8::OP_Ex9E()	//SKP Vx; Skip next instruction if key pressed = value at Vx.
+{
+	uint8_t Vx = (opcode & 0x0F00) >> 8u;
+	uint8_t key = registers[Vx];
+	if (input[key]) {
+		counter += 2;
+	}
+}
+
+void Chip8::OP_ExA1()	//SKNP Vx; Ex9E, but NOT pressed.
+{
+	uint8_t Vx = (opcode & 0x0F00) >> 8u;
+	uint8_t key = registers[Vx];
+	if (!input[key]) {
+		counter += 2;
+	}
+}
+
+void Chip8::OP_Fx07()	//LD Vx, DT; Set Vx to DT (delay timer)
+{
+	uint8_t Vx = (opcode & 0x0F00) >> 8u;
+	registers[Vx] = delay;
+}
+
+void Chip8::OP_Fx0A()	//LD Vx, K; Store the next pressed key value K in Vx.
+{											//Stops all execution until pressed. We 'wait' by decrementing counter by 2 if nothing pressed.
+	uint8_t Vx = (opcode & 0x0F00u) >> 8u;	//This is basically skipping but in reverse, always coming back to the same instruction.
+
+	bool inputCheck = false;
+	for (int i = 0; !inputCheck & i < 16; i++) {
+		if (input[i]) {
+			registers[Vx] = i;
+			inputCheck = true;
+		}
+	}
+	if (!inputCheck) {
+		counter -= 2;
+	}
+}
+
+void Chip8::OP_Fx15()	//LD DT, Vx; Set DT (delay timer) to Vx.
+{
+	uint8_t Vx = (opcode & 0x0F00) >> 8u;
+	delay = registers[Vx];
+}
+
+void Chip8::OP_Fx18()	//LD ST, Vx; Set ST (sound timer) to Vx.
+{
+	uint8_t Vx = (opcode & 0x0F00) >> 8u;
+	sound = registers[Vx];
+}
+
+void Chip8::OP_Fx1E()	//ADD I, Vx; Set I = I + Vx
+{
+	uint8_t Vx = (opcode & 0x0F00) >> 8u;
+	index += registers[Vx];
+}
+
+void Chip8::OP_Fx29()	//LD F, Vx; Value of I set to hex sprite corresponding to Vx.
+{						//Sprite in this case means fontset. Each 'sprite' is 5 bytes.
+	uint8_t Vx = (opcode & 0x0F00) >> 8u;
+	uint8_t value = registers[Vx];
+	index = FONTSET_START + (5 * value); //FONTSET_START = 0x50, (5 * value) gets us the start of each char.
+}
+
+void Chip8::OP_Fx33()	//LD B, Vx; Decimal Value of Vx. Hundreds in I, Tens in I + 1, Ones in I + 2.
+{
+	uint8_t Vx = (opcode & 0x0F00) >> 8u;
+	uint8_t value = registers[Vx];
+
+	for (int i = 0; i < 3; i++) {
+		memory[index + (2 - i)] = value % 10;
+		value /= 10;
+	}
+}
+
+void Chip8::OP_Fx55()	//LD[I], Vx; Store registers V0 to Vx, starting at I.
+{
+	uint8_t Vx = (opcode & 0x0F00) >> 8u;
+
+	for (int i = 0; i <= Vx; i++) {
+		memory[index + i] = registers[i];
+	}
+}
+
+void Chip8::OP_Fx65()	//LD Vx, [I]; Fx55, but read from I, store into registers V0 to Vx.
+{
+	uint8_t Vx = (opcode & 0x0F00) >> 8u;
+
+	for (int i = 0; i <= Vx; i++) {
+		registers[i] = memory[index + i];
+	}
+}

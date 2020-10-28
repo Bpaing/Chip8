@@ -18,7 +18,7 @@ class Chip8
 		uint8_t sound{};				//Similar to delay, but for sounds
 		uint8_t input[16]{};			//16 inputs, all representing a hex value.
 		uint32_t display[64 * 32]{};	//62 x 32 pixel display, uint32 is used for SDL later on.
-		uint16_t opcode{};				//CPU instruction. uint16 is used because instructions can be specified to be hex.			
+		uint16_t opcode{};				//CPU instruction. uint16 is used because instructions can be specified to be hex.
 
 		std::default_random_engine randNumGen;				//random generator
 		std::uniform_int_distribution<uint8_t> randByte;	//random number storage
@@ -56,4 +56,15 @@ class Chip8
 		void OP_Bnnn();
 		void OP_Cxkk();
 		void OP_Dxyn();
+		void OP_Ex9E();
+		void OP_ExA1();
+		void OP_Fx07();
+		void OP_Fx0A();
+		void OP_Fx15();
+		void OP_Fx18();
+		void OP_Fx1E();
+		void OP_Fx29();
+		void OP_Fx33();
+		void OP_Fx55();
+		void OP_Fx65();
 };
