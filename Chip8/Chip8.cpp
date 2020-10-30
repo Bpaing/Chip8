@@ -15,6 +15,36 @@ Chip8::Chip8()
 	}
 }
 
+//Fetch opcode from instructions
+//Decode which opcode to use
+//Execute opcode
+void Chip8::Cycle()
+{
+	//Fetch		//memory is 0x00, while opcodes are 0x0000. Shift left then add next to get full opcode
+	opcode = (memory[counter] << 8u) | memory[counter + 1];
+
+	//Increment counter to the next opcode before executing
+	counter += 2;
+
+	//Decode and Execute 
+	//Determine which group the opcode belongs in using first digit
+	//Then, shift to rightmost digit to access master table indices (0 - F).
+	//From there, function pointer does it
+	((*this).*(table[(opcode & 0xF000u) >> 12u]))();
+
+	//Decrement the delay timer if it's been set
+	if (delay > 0)
+	{
+		--delay;
+	}
+
+	//Decrement the sound timer if it's been set
+	if (sound > 0)
+	{
+		--sound;
+	}
+}
+
 //0x050-0x0A0 requires the built-in characters (0-9, A-F)
 //in binary . . . draw the characters, convert to hex
 //Fontset size is 80, and there are 16 characters. Each character gets 5 indices.
