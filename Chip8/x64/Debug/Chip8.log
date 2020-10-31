@@ -1,0 +1,18 @@
+﻿  Chip8.cpp
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\random(2401): error C2338: invalid template argument for uniform_int_distribution: N4659 29.6.1.1 [rand.req.genl]/1e requires one of short, int, long, long long, unsigned short, unsigned int, unsigned long, or unsigned long long
+  e:\users\brendan\downloads\emulation\chip8\chip8\chip8.h(24): note: see reference to class template instantiation 'std::uniform_int_distribution<uint8_t>' being compiled
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\random(2401): error C2338: note: char, signed char, unsigned char, int8_t, and uint8_t are not allowed
+e:\users\brendan\downloads\emulation\chip8\chip8\chip8.h(27): warning C4244: 'argument': conversion from '_Rep' to 'unsigned int', possible loss of data
+          with
+          [
+              _Rep=std::chrono::system_clock::rep
+          ]
+e:\users\brendan\downloads\emulation\chip8\chip8\chip8.cpp(10): error C2084: function 'Chip8::Chip8(void)' already has a body
+  e:\users\brendan\downloads\emulation\chip8\chip8\chip8.h(26): note: see previous definition of '{ctor}'
+e:\users\brendan\downloads\emulation\chip8\chip8\chip8.cpp(14): error C2065: 'fontset': undeclared identifier
+e:\users\brendan\downloads\emulation\chip8\chip8\chip8.cpp(303): error C2065: 'VIDEO_WIDTH': undeclared identifier
+e:\users\brendan\downloads\emulation\chip8\chip8\chip8.cpp(304): error C2065: 'VIDEO_HEIGHT': undeclared identifier
+e:\users\brendan\downloads\emulation\chip8\chip8\chip8.cpp(312): error C2065: 'video': undeclared identifier
+e:\users\brendan\downloads\emulation\chip8\chip8\chip8.cpp(312): error C2065: 'yPos': undeclared identifier
+e:\users\brendan\downloads\emulation\chip8\chip8\chip8.cpp(312): error C2065: 'VIDEO_WIDTH': undeclared identifier
+e:\users\brendan\downloads\emulation\chip8\chip8\chip8.cpp(357): warning C4554: '&': check operator precedence for possible error; use parentheses to clarify precedence
