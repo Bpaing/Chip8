@@ -7,7 +7,7 @@ Graphics::Graphics(char const* title, int windowWidth, int windowHeight, int tex
 	SDL_Init(SDL_INIT_VIDEO);	//This function must ALWAYS be called to use SDL.
 								//Parameters are subsystems like video, audio, etc.
 
-	window = SDL_CreateWindow(title, 0, 0, windowWidth, windowHeight, SDL_WINDOW_BORDERLESS);
+	window = SDL_CreateWindow(title, 200, 200, windowWidth, windowHeight, SDL_WINDOW_SHOWN);
 
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 

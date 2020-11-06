@@ -1,6 +1,8 @@
 //Chip8 provides the framework for the emulator, but now we need a way to see it.
 //Uses SDL library for rendering.
 
+#include <cstdint>
+
 class SDL_Window;		//Window for our emulator		
 class SDL_Renderer;		//GPU can now be used to render 
 class SDL_Texture;		//Can now map sprites onto the screen

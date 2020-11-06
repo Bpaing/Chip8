@@ -90,6 +90,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -134,6 +135,10 @@
   <ItemGroup>
     <ClInclude Include="Chip8.h" />
     <ClInclude Include="Graphics.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\ROM Tests\BC_test.ch8" />
+    <None Include="..\ROM Tests\test_opcode.ch8" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

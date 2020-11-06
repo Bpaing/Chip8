@@ -1,6 +1,9 @@
 //By Brendan Paing. Started 10/22/2020.
 
 #include "Chip8.h"
+#include <chrono>
+#include <fstream>
+
 
 const unsigned int START_ADDRESS = 0x200;	//0x000 to 0x1FF is reserved, instructions start at 0x200
 const unsigned int FONTSET_START = 0x050;	//0x050-0x0A0
@@ -29,7 +32,7 @@ uint8_t fontset[FONTSET_SIZE]{
 };
 
 Chip8::Chip8()	//Generally, best practice is to seed ONCE, then extract numbers.
-	: randNumGen(std::chrono::system_clock::now().time_since_epoch().count()) //seed is system clock.
+	: randNumGen((unsigned int) std::chrono::system_clock::now().time_since_epoch().count()) //seed is system clock.
 {
 	counter = START_ADDRESS;
 
@@ -37,7 +40,7 @@ Chip8::Chip8()	//Generally, best practice is to seed ONCE, then extract numbers.
 		memory[FONTSET_START + i] = fontset[i];
 	}
 
-	randByte = std::uniform_int_distribution<uint8_t>(0, 255U);
+	randByte = std::uniform_int_distribution<unsigned int>(0, 255U);
 	//grabs numbers from the generator seeded in the constructor.
 
 	//Function pointers for instructions, patterns link to sub tables.
@@ -117,7 +120,6 @@ void Chip8::Cycle()
 }
 
 
-/*
 //copied from site austinmorlan.com
 void Chip8::LoadROM(char const* filename)
 {
@@ -144,7 +146,7 @@ void Chip8::LoadROM(char const* filename)
 		// Free the buffer
 		delete[] buffer;
 	}
-}*/
+}
 
 //Instruction implementation
 void Chip8::OP_00E0()	//CLS; clear display
@@ -407,7 +409,7 @@ void Chip8::OP_Fx0A()	//LD Vx, K; Store the next pressed key value K in Vx.
 	uint8_t Vx = (opcode & 0x0F00u) >> 8u;	//This is basically skipping but in reverse, always coming back to the same instruction.
 
 	bool inputCheck = false;
-	for (int i = 0; !inputCheck & i < 16; i++) {
+	for (int i = 0; !inputCheck & (i < 16); i++) {
 		if (input[i]) {
 			registers[Vx] = i;
 			inputCheck = true;

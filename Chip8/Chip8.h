@@ -4,13 +4,11 @@
 #define CHIP_8_H
 
 #include <cstdint>
-#include <string>
 #include <random>
-#include <chrono>
 
 const unsigned int KEY_COUNT = 16;
-const unsigned int VIDEO_WIDTH = 32;
-const unsigned int VIDEO_HEIGHT = 64;
+const unsigned int VIDEO_WIDTH = 64;
+const unsigned int VIDEO_HEIGHT = 32;
 const unsigned int REGISTER_COUNT = 16;
 const unsigned int MEMORY_SIZE = 4096;
 const unsigned int STACK_SIZE = 16;
@@ -97,7 +95,7 @@ class Chip8
 		uint16_t opcode{};							//CPU instruction. uint16 is used because instructions can be specified to be hex.
 
 		std::default_random_engine randNumGen;				//random generator
-		std::uniform_int_distribution<uint8_t> randByte;	//random number storage
+		std::uniform_int_distribution<unsigned int> randByte;	//random number storage
 };
 
 

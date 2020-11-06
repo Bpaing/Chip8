@@ -33,4 +33,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\ROM Tests\BC_test.ch8">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\ROM Tests\test_opcode.ch8">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>
